@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Board {
 
@@ -10,6 +11,8 @@ public class Board {
     // Array of all completed vertical edges on the board
     // [start dot (drawing top-to-bottom)] [col number]
     boolean[][] yEdges;
+
+    Box[][] boxes;
 
     int size;
 
@@ -28,11 +31,22 @@ public class Board {
             Arrays.fill(row, false);
         }
 
+        Random generator = new Random();
+
+        boxes = new Box[size][size];
+        for(Box[] row : boxes) {
+            for(int j = 0; j < row.length; j++) {
+                row[j] = new Box(generator.nextInt(5) + 1);
+            }
+        }
+
         edgesRemaining = 2 * ( (size + 1) * (size) );
     }
 
     boolean addEdge(int row, int col, boolean isXEdge) {
-        if (!coordinatesExist(row, col)) {
+
+        if (coordinatesAreNotValid(row, col, isXEdge)) {
+            System.out.println("\nCoordinates are not valid\n");
             return false;
         }
 
@@ -46,14 +60,15 @@ public class Board {
             return true;
         }
 
+        System.out.println("\nFailed to add edge\n");
         return false;
     }
 
-    boolean coordinatesExist(int row, int col) {
-        if(row < 0 || row > size || col < 0 || col > size) {
-            return false;
+    boolean coordinatesAreNotValid(int row, int col, boolean isXEdge) {
+        if(isXEdge) {
+            return (row < 0 || row > size       || col < 0 || col > (size - 1));
         } else {
-            return true;
+            return (row < 0 || row > (size - 1) || col < 0 || col > size);
         }
     }
 
@@ -74,6 +89,8 @@ public class Board {
                 drawYRow(row);
             }
         }
+
+        System.out.println("\nEDGES REMAINING: " + edgesRemaining + "\n");
     }
 
     void drawHeader() {
@@ -95,13 +112,13 @@ public class Board {
 
         for (int col = 0; col < size; col++) {
             if (xEdges[row][col]) {
-                rowString.append("· --- ");
+                rowString.append("◉ --- ");
             } else {
-                rowString.append("·     ");
+                rowString.append("◉     ");
             }
         }
 
-        rowString.append("·");
+        rowString.append("◉");
         System.out.println(rowString.toString());
     }
 
@@ -109,11 +126,33 @@ public class Board {
         StringBuilder rowString = new StringBuilder();
         rowString.append("  ");
 
+        String centerString;
+
         for(int col = 0; col < size + 1; col++) {
-            if(yEdges[row][col]) {
-                rowString.append("|     ");
+
+            // Generate string for center of box
+            // Display owner initial if box is complete, value of box otherwise
+            if (col < size) {
+
+                if (boxes[row][col].isComplete()) {
+                    centerString = boxes[row][col].getOwnerInitial();
+                } else {
+                    centerString = Integer.toString(boxes[row][col].getValue());
+                }
+
             } else {
-                rowString.append("      ");
+                centerString = " ";
+            }
+
+            // Generate vertical line
+            if(yEdges[row][col]) {
+                rowString.append("|  ")
+                         .append(centerString)
+                         .append("  ");
+            } else {
+                rowString.append("   ")
+                         .append(centerString)
+                         .append("  ");
             }
         }
 

@@ -3,10 +3,11 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
+
         int row, col;
         String direction;
         boolean isXEdge;
-        Board board = new Board(5);
+        Board board = new Board(2);
         board.drawBoard();
         while(true) {
             System.out.println("Enter the ROW and COLUMN of the point you want to draw FROM");
