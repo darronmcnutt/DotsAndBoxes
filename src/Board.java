@@ -15,10 +15,16 @@ public class Board {
     Box[][] boxes;
 
     int size;
-
     int edgesRemaining;
+    int blackScore;
+    int whiteScore;
+
 
     public Board(int size) {
+
+        this.blackScore = 0;
+        this.whiteScore = 0;
+
         this.size = size;
 
         xEdges = new boolean[size + 1][size];
@@ -72,6 +78,40 @@ public class Board {
         }
     }
 
+    //TODO: Think about where to call this function
+    void checkBox(int row, int col, boolean isXEdge, Player player) {
+
+        if (isXEdge) {
+
+            // Check if box above horizontal edge is complete
+            if (row > 0)    { checkBoxHelper(row - 1, col, player); }
+
+            // Check if box below horizontal edge is complete
+            if (row < size) { checkBoxHelper(row, col, player); }
+
+        } else {
+
+            // Check if box left of vertical edge is complete
+            if (col > 0)    { checkBoxHelper(row, col - 1, player); }
+
+            // Check if box right of vertical edge is complete
+            if (col < size) { checkBoxHelper(row, col, player); }
+        }
+    }
+    void checkBoxHelper(int row, int col, Player player) {
+
+        if (xEdges[row][col] && xEdges[row+1][col] && yEdges[row][col] && yEdges[row][col+1]) {
+            boxes[row][col].setComplete(true);
+
+            boxes[row][col].setOwner(player);
+            if (player == Player.BLACK) {
+                blackScore += boxes[row][col].getValue();
+            } else {
+                whiteScore += boxes[row][col].getValue();
+            }
+        }
+
+    }
 
     ArrayList<Board> getActions() {
         return new ArrayList<>();
@@ -90,7 +130,9 @@ public class Board {
             }
         }
 
-        System.out.println("\nEDGES REMAINING: " + edgesRemaining + "\n");
+        System.out.println("\nEDGES REMAINING: " + edgesRemaining);
+        System.out.println("    BLACK SCORE: " + blackScore);
+        System.out.println("    WHITE SCORE: " + whiteScore + "\n");
     }
 
     void drawHeader() {

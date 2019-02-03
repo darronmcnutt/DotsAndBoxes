@@ -29,6 +29,8 @@ public class Box {
 
     void setOwner(Player owner) { this.owner = owner; }
 
+    public void setComplete(boolean complete) { this.complete = complete; }
+
     Box copy() {
         return new Box(this.complete, this.owner, this.value);
     }
