@@ -6,22 +6,22 @@ public class Board {
 
     // Array of all completed horizontal edges on the board
     // [row number] [column number == start dot (drawing left-to-right)]
-    boolean[][] xEdges;
+    private boolean[][] xEdges;
 
     // Array of all completed vertical edges on the board
     // [row number == start dot (drawing top-to-bottom)] [col number]
-    boolean[][] yEdges;
+    private boolean[][] yEdges;
 
-    Box[][] boxes;
+    private Box[][] boxes;
 
-    int size;
-    int edgesRemaining;
-    int blackScore;
-    int whiteScore;
+    private int size;
+    private int edgesRemaining;
+    private int blackScore;
+    private int whiteScore;
 
     // Bookkeeping for Minimax
-    Action lastAction;
-    int utilityValue;
+    private Action lastAction;
+    private int utilityValue;
 
 
     public Board(int size) {
