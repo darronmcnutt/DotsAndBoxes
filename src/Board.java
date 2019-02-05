@@ -5,11 +5,11 @@ import java.util.Random;
 public class Board {
 
     // Array of all completed horizontal edges on the board
-    // [row number] [start dot (drawing left-to-right)]
+    // [row number] [column number == start dot (drawing left-to-right)]
     boolean[][] xEdges;
 
     // Array of all completed vertical edges on the board
-    // [start dot (drawing top-to-bottom)] [col number]
+    // [row number == start dot (drawing top-to-bottom)] [col number]
     boolean[][] yEdges;
 
     Box[][] boxes;
@@ -47,6 +47,16 @@ public class Board {
         }
 
         edgesRemaining = 2 * ( (size + 1) * (size) );
+    }
+
+    private Board(boolean[][] xEdges, boolean[][] yEdges, Box[][] boxes, int size, int edgesRemaining, int blackScore, int whiteScore) {
+        this.xEdges = xEdges;
+        this.yEdges = yEdges;
+        this.boxes = boxes;
+        this.size = size;
+        this.edgesRemaining = edgesRemaining;
+        this.blackScore = blackScore;
+        this.whiteScore = whiteScore;
     }
 
     boolean addEdge(int row, int col, boolean isXEdge) {
@@ -101,9 +111,10 @@ public class Board {
     void checkBoxHelper(int row, int col, Player player) {
 
         if (xEdges[row][col] && xEdges[row+1][col] && yEdges[row][col] && yEdges[row][col+1]) {
-            boxes[row][col].setComplete(true);
 
+            boxes[row][col].setComplete(true);
             boxes[row][col].setOwner(player);
+
             if (player == Player.BLACK) {
                 blackScore += boxes[row][col].getValue();
             } else {
@@ -113,12 +124,64 @@ public class Board {
 
     }
 
-    ArrayList<Board> getActions() {
-        return new ArrayList<>();
+    ArrayList<Board> getActions(Player player) {
+        ArrayList<Board> actions = new ArrayList<>();
+
+        // Get xEdge actions
+        for(int i = 0; i < size + 1; i++) {
+            for(int j = 0; j < size; j++) {
+                if (!xEdges[i][j]) {
+                    Board boardCopy = this.copy();
+                    boardCopy.addEdge(i, j, true);
+                    boardCopy.checkBox(i, j, true, player);
+                    actions.add(boardCopy);
+                }
+            }
+        }
+
+        // Get yEdge actions
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size + 1; j++) {
+                if(!yEdges[i][j]) {
+                    Board boardCopy = this.copy();
+                    boardCopy.addEdge(i, j, false);
+                    boardCopy.checkBox(i, j, false, player);
+                    actions.add(boardCopy);
+                }
+            }
+        }
+
+        return actions;
     }
 
     boolean isTerminal() {
         return (edgesRemaining == 0);
+    }
+
+    Board copy() {
+
+        boolean[][] xEdgesCopy = new boolean[size + 1][size];
+        boolean[][] yEdgesCopy = new boolean[size][size + 1];
+        Box[][] boxesCopy = new Box[size][size];
+
+        // Deep copy the xEdges array
+        for(int i = 0; i < size + 1; i++) {
+            xEdgesCopy[i] = Arrays.copyOf(xEdges[i], size);
+        }
+
+        // Deep copy the yEdges array
+        for(int i = 0; i < size; i++) {
+            yEdgesCopy[i] = Arrays.copyOf(yEdges[i], size + 1);
+        }
+
+        // Deep copy the boxes array
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                boxesCopy[i][j] = boxes[i][j].copy();
+            }
+        }
+
+        return new Board(xEdgesCopy, yEdgesCopy, boxesCopy, size, edgesRemaining, blackScore, whiteScore);
     }
 
     void drawBoard() {
