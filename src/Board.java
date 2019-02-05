@@ -19,11 +19,16 @@ public class Board {
     int blackScore;
     int whiteScore;
 
+    // Bookkeeping for Minimax
+    Action lastAction;
+    int utilityValue;
+
 
     public Board(int size) {
 
         this.blackScore = 0;
         this.whiteScore = 0;
+        this.utilityValue = 0;
 
         this.size = size;
 
@@ -49,7 +54,7 @@ public class Board {
         edgesRemaining = 2 * ( (size + 1) * (size) );
     }
 
-    private Board(boolean[][] xEdges, boolean[][] yEdges, Box[][] boxes, int size, int edgesRemaining, int blackScore, int whiteScore) {
+    private Board(boolean[][] xEdges, boolean[][] yEdges, Box[][] boxes, int size, int edgesRemaining, int blackScore, int whiteScore, Action lastAction) {
         this.xEdges = xEdges;
         this.yEdges = yEdges;
         this.boxes = boxes;
@@ -57,6 +62,8 @@ public class Board {
         this.edgesRemaining = edgesRemaining;
         this.blackScore = blackScore;
         this.whiteScore = whiteScore;
+        this.lastAction = lastAction;
+        this.utilityValue = blackScore - whiteScore;
     }
 
     boolean addEdge(int row, int col, boolean isXEdge) {
@@ -68,10 +75,12 @@ public class Board {
 
         if (isXEdge && !xEdges[row][col]) {
             xEdges[row][col] = true;
+            lastAction = new Action(row, col, true);
             edgesRemaining--;
             return true;
         } else if (!isXEdge && !yEdges[row][col]){
             yEdges[row][col] = true;
+            lastAction = new Action(row, col, false);
             edgesRemaining--;
             return true;
         }
@@ -154,8 +163,24 @@ public class Board {
         return actions;
     }
 
+    public Action getLastAction() {
+        return lastAction;
+    }
+
+    int getScoreDiff() {
+        return blackScore - whiteScore;
+    }
+
     boolean isTerminal() {
         return (edgesRemaining == 0);
+    }
+
+    public int getUtilityValue() {
+        return utilityValue;
+    }
+
+    public void setUtilityValue(int utilityValue) {
+        this.utilityValue = utilityValue;
     }
 
     Board copy() {
@@ -181,7 +206,7 @@ public class Board {
             }
         }
 
-        return new Board(xEdgesCopy, yEdgesCopy, boxesCopy, size, edgesRemaining, blackScore, whiteScore);
+        return new Board(xEdgesCopy, yEdgesCopy, boxesCopy, size, edgesRemaining, blackScore, whiteScore, lastAction);
     }
 
     void drawBoard() {
