@@ -129,6 +129,8 @@ public class Board {
             } else {
                 whiteScore += boxes[row][col].getValue();
             }
+
+            utilityValue = blackScore - whiteScore;
         }
 
     }
@@ -165,10 +167,6 @@ public class Board {
 
     public Action getLastAction() {
         return lastAction;
-    }
-
-    int getScoreDiff() {
-        return blackScore - whiteScore;
     }
 
     boolean isTerminal() {

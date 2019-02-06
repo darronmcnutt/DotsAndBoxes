@@ -22,14 +22,15 @@ public class Main {
         board.drawBoard();
 
         System.out.println("Directions\n----------");
-        System.out.println("Enter the ROW and COLUMN index of the STARTING POINT of the line");
+        System.out.println("Enter the ROW and COLUMN index of the STARTING POINT of the line you wish to draw");
         System.out.println("followed by the DIRECTION you want to draw from this point - RIGHT(R) or DOWN(D)");
+        System.out.println("Example: 0 2 d");
         System.out.println("\nPress ENTER to begin\n");
 
         in.nextLine();
 
 
-        while(true) {
+        while(!board.isTerminal()) {
 
             if (currentPlayer == Player.BLACK) {
                 System.out.println("I am thinking about my next move...");
@@ -61,6 +62,8 @@ public class Main {
             board.drawBoard();
 
         }
+
+        System.out.println("GAME OVER!");
 
 
     }
