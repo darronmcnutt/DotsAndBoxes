@@ -12,17 +12,19 @@ public class Board {
     // [row number == start dot (drawing top-to-bottom)] [col number]
     private boolean[][] yEdges;
 
+    // Array of boxes on the board, keeps track of owner and value of each box
+    // [row number][col number] of upper-left coordinate
     private Box[][] boxes;
 
+    // Bookkeeping for board
     private int size;
     private int edgesRemaining;
     private int blackScore;
     private int whiteScore;
 
-    // Bookkeeping for Minimax
+    // Bookkeeping for Minimax and Alpha-beta
     private Action lastAction;
     private int utilityValue;
-
 
     public Board(int size) {
 
@@ -85,7 +87,7 @@ public class Board {
             return true;
         }
 
-        System.out.println("\nFailed to add edge\n");
+        System.out.println("\nThis edge already exists\n");
         return false;
     }
 
@@ -97,7 +99,6 @@ public class Board {
         }
     }
 
-    //TODO: Think about where to call this function
     void checkBox(int row, int col, boolean isXEdge, Player player) {
 
         if (isXEdge) {
@@ -121,7 +122,6 @@ public class Board {
 
         if (xEdges[row][col] && xEdges[row+1][col] && yEdges[row][col] && yEdges[row][col+1]) {
 
-            boxes[row][col].setComplete(true);
             boxes[row][col].setOwner(player);
 
             if (player == Player.BLACK) {
