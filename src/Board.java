@@ -208,6 +208,7 @@ public class Board {
     }
 
     void drawBoard() {
+        //System.out.print("\033[H\033[2J");
         drawHeader();
         for(int row = 0; row < size + 1; row++) {
             drawXRow(row);
