@@ -1,11 +1,11 @@
 import java.time.Duration;
 import java.time.Instant;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-
         int row, col, size = 0, plies = 0, search = 0;
         String direction;
         boolean isXEdge;
@@ -16,13 +16,21 @@ public class Main {
             try {
                 System.out.print("Enter board size: ");
                 size = Integer.parseInt(userInput.nextLine());
+                if (size < 2) { throw new InputMismatchException(); }
+
                 System.out.print("Enter num of plies: ");
                 plies = Integer.parseInt(userInput.nextLine());
-                System.out.print("Select search algorithm\n(1) Minimax (2) Alpha-beta (3) Alpha-beta with timeout: ");
+                if (plies < 1) { throw new InputMismatchException(); }
+
+                System.out.print("Select search algorithm\n(1) Minimax (2) Alpha-beta: ");
                 search = Integer.parseInt(userInput.nextLine());
+                if (search != 1 && search != 2) { throw new InputMismatchException(); }
+
                 inputComplete = true;
             } catch (NumberFormatException e) {
                 System.out.println("\nINVALID INPUT: please enter an integer\n");
+            } catch (InputMismatchException e) {
+                System.out.println("\nINVALID INPUT\n");
             }
         }
 
@@ -59,12 +67,8 @@ public class Main {
                         System.out.println("Alpha-beta");
                         computerAction = Search.alphaBeta(board, plies);
                         break;
-                    case 3:
-                        System.out.println("Alpha-beta with timeout");
-                        computerAction = Search.alphaBetaTimer(board, plies);
-                        break;
                     default:
-                        System.out.println("Alpha-beta search");
+                        System.out.println("Alpha-beta");
                         computerAction = Search.alphaBeta(board, plies);
                 }
 
@@ -73,11 +77,11 @@ public class Main {
 
                 row = computerAction.getRow();
                 col = computerAction.getCol();
-                isXEdge = computerAction.isxEdge();
+                isXEdge = computerAction.isXEdge();
 
                 if (board.addEdge(row, col, isXEdge)) {
                     board.checkBox(row, col, isXEdge, currentPlayer);
-                    currentPlayer = currentPlayer == Player.BLACK ? Player.WHITE : Player.BLACK;
+                    currentPlayer = Player.WHITE;
                 }
 
             } else {
@@ -102,7 +106,7 @@ public class Main {
                     }
                     if (board.addEdge(row, col, isXEdge)) {
                         board.checkBox(row, col, isXEdge, currentPlayer);
-                        currentPlayer = currentPlayer == Player.BLACK ? Player.WHITE : Player.BLACK;
+                        currentPlayer = Player.BLACK;
                     }
                 } catch (Exception e) {
                     System.out.println("\nINVALID INPUT: please use the correct format");
