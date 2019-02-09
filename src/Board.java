@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * Weighted Dots and Boxes game board. Also includes bookkeeping data useful for adversarial search algorithms
+ */
 public class Board {
 
     // Array of all completed horizontal edges on the board
@@ -34,11 +37,13 @@ public class Board {
 
         this.size = size;
 
+        // Initialize the xEdges array
         xEdges = new boolean[size + 1][size];
         for(boolean[] row : xEdges) {
             Arrays.fill(row, false);
         }
 
+        // Initialize the yEdges array
         yEdges = new boolean[size][size + 1];
         for(boolean[] row : yEdges) {
             Arrays.fill(row, false);
@@ -46,6 +51,7 @@ public class Board {
 
         Random generator = new Random();
 
+        // Initialize the boxes array with random values
         boxes = new Box[size][size];
         for(Box[] row : boxes) {
             for(int j = 0; j < row.length; j++) {
@@ -53,10 +59,11 @@ public class Board {
             }
         }
 
+        // Calculate the number of edges remaining
         edgesRemaining = 2 * ( (size + 1) * (size) );
     }
 
-    private Board(boolean[][] xEdges, boolean[][] yEdges, Box[][] boxes, int size, int edgesRemaining, int blackScore, int whiteScore, Action lastAction) {
+    private Board(boolean[][] xEdges, boolean[][] yEdges, Box[][] boxes, int size, int edgesRemaining, int blackScore, int whiteScore, Action lastAction, int utilityValue) {
         this.xEdges = xEdges;
         this.yEdges = yEdges;
         this.boxes = boxes;
@@ -65,9 +72,16 @@ public class Board {
         this.blackScore = blackScore;
         this.whiteScore = whiteScore;
         this.lastAction = lastAction;
-        this.utilityValue = blackScore - whiteScore;
+        this.utilityValue = utilityValue;
     }
 
+    /**
+     * Adds an edge (line connecting two adjacent dots) to the board
+     * @param row Y coordinate of the starting point
+     * @param col X coordinate of the starting point
+     * @param isXEdge True: draw right from the starting point. False: draw down from the starting point.
+     * @return true if edge successfully added, false otherwise
+     */
     boolean addEdge(int row, int col, boolean isXEdge) {
 
         if (coordinatesAreNotValid(row, col, isXEdge)) {
@@ -91,6 +105,13 @@ public class Board {
         return false;
     }
 
+    /**
+     * Checks whether a horizontal or vertical edge can be drawn from the specified starting point
+     * @param row Y coordinate
+     * @param col X coordinate
+     * @param isXEdge horizontal or vertical edge
+     * @return true if coordinates are not valid
+     */
     boolean coordinatesAreNotValid(int row, int col, boolean isXEdge) {
         if(isXEdge) {
             return (row < 0 || row > size       || col < 0 || col > (size - 1));
@@ -99,6 +120,14 @@ public class Board {
         }
     }
 
+    /**
+     * Checks whether the specified edge completes a box. If so, sets the specified player as the owner of the box
+     * and updates the score.
+     * @param row Y coordinate of the edge starting point
+     * @param col X coordinate of the edge starting point
+     * @param isXEdge horizontal or vertical edge
+     * @param player player who added this edge to the board
+     */
     void checkBox(int row, int col, boolean isXEdge, Player player) {
 
         if (isXEdge) {
@@ -118,6 +147,14 @@ public class Board {
             if (col < size) { checkBoxHelper(row, col, player); }
         }
     }
+
+    /**
+     * Helper function for checkBox. Checks all four edges of a box for completeness. If complete, assigns the specified
+     * player as the owner of the box, updates the score, and updates the utility value.
+     * @param row Y coordinate of upper left corner of the box
+     * @param col X coordinate of upper left corner of the box
+     * @param player player to be assigned as the owner of the box if complete
+     */
     void checkBoxHelper(int row, int col, Player player) {
 
         if (xEdges[row][col] && xEdges[row+1][col] && yEdges[row][col] && yEdges[row][col+1]) {
@@ -135,7 +172,12 @@ public class Board {
 
     }
 
-    ArrayList<Board> getActions(Player player) {
+    /**
+     * Returns an ArrayList of Board objects representing all possible moves from the current state
+     * @param player specifies the current player
+     * @return ArrayList of Board objects representing all possible moves from the current state
+     */
+    public ArrayList<Board> getActions(Player player) {
         ArrayList<Board> actions = new ArrayList<>();
 
         // Get xEdge actions
@@ -181,7 +223,11 @@ public class Board {
         this.utilityValue = utilityValue;
     }
 
-    Board copy() {
+    /**
+     * Creates a deep copy of the current Board
+     * @return a deep copy of the current board as a new Board object
+     */
+    public Board copy() {
 
         boolean[][] xEdgesCopy = new boolean[size + 1][size];
         boolean[][] yEdgesCopy = new boolean[size][size + 1];
@@ -204,9 +250,12 @@ public class Board {
             }
         }
 
-        return new Board(xEdgesCopy, yEdgesCopy, boxesCopy, size, edgesRemaining, blackScore, whiteScore, lastAction);
+        return new Board(xEdgesCopy, yEdgesCopy, boxesCopy, size, edgesRemaining, blackScore, whiteScore, lastAction, utilityValue);
     }
 
+    /**
+     * Renders the current board state in the console
+     */
     void drawBoard() {
         //System.out.print("\033[H\033[2J");
         drawHeader();

@@ -1,3 +1,6 @@
+/**
+ * Stores data needed to add an edge to the board
+ */
 public class Action {
     int row;
     int col;
@@ -17,7 +20,7 @@ public class Action {
         return col;
     }
 
-    public boolean isxEdge() {
+    public boolean isXEdge() {
         return xEdge;
     }
 }
