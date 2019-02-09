@@ -9,18 +9,18 @@ public class Board {
 
     // Array of all completed horizontal edges on the board
     // [row number] [column number == start dot (drawing left-to-right)]
-    private boolean[][] xEdges;
+    private final boolean[][] xEdges;
 
     // Array of all completed vertical edges on the board
     // [row number == start dot (drawing top-to-bottom)] [col number]
-    private boolean[][] yEdges;
+    private final boolean[][] yEdges;
 
     // Array of boxes on the board, keeps track of owner and value of each box
     // [row number][col number] of upper-left coordinate
-    private Box[][] boxes;
+    private final Box[][] boxes;
 
     // Bookkeeping for board
-    private int size;
+    private final int size;
     private int edgesRemaining;
     private int blackScore;
     private int whiteScore;
@@ -112,7 +112,7 @@ public class Board {
      * @param isXEdge horizontal or vertical edge
      * @return true if coordinates are not valid
      */
-    boolean coordinatesAreNotValid(int row, int col, boolean isXEdge) {
+    private boolean coordinatesAreNotValid(int row, int col, boolean isXEdge) {
         if(isXEdge) {
             return (row < 0 || row > size       || col < 0 || col > (size - 1));
         } else {
@@ -155,7 +155,7 @@ public class Board {
      * @param col X coordinate of upper left corner of the box
      * @param player player to be assigned as the owner of the box if complete
      */
-    void checkBoxHelper(int row, int col, Player player) {
+    private void checkBoxHelper(int row, int col, Player player) {
 
         if (xEdges[row][col] && xEdges[row+1][col] && yEdges[row][col] && yEdges[row][col+1]) {
 
@@ -227,7 +227,7 @@ public class Board {
      * Creates a deep copy of the current Board
      * @return a deep copy of the current board as a new Board object
      */
-    public Board copy() {
+    private Board copy() {
 
         boolean[][] xEdgesCopy = new boolean[size + 1][size];
         boolean[][] yEdgesCopy = new boolean[size][size + 1];
@@ -271,7 +271,7 @@ public class Board {
         System.out.println("    WHITE SCORE: " + whiteScore + "\n");
     }
 
-    void drawHeader() {
+    private void drawHeader() {
         StringBuilder rowString = new StringBuilder();
         rowString.append("  ");
 
@@ -283,7 +283,7 @@ public class Board {
         System.out.println(rowString.toString());
 
     }
-    void drawXRow(int row) {
+    private void drawXRow(int row) {
         StringBuilder rowString = new StringBuilder();
         rowString.append(row);
         rowString.append(" ");
@@ -300,7 +300,7 @@ public class Board {
         System.out.println(rowString.toString());
     }
 
-    void drawYRow(int row) {
+    private void drawYRow(int row) {
         StringBuilder rowString = new StringBuilder();
         rowString.append("  ");
 

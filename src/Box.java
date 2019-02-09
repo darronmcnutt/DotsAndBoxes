@@ -2,8 +2,8 @@
  * Keeps track of the value of one box on the game board and which player owns that particular box
  */
 public class Box {
-    Player owner;
-    int value;
+    private Player owner;
+    private final int value;
 
     public Box(int value) {
         this.owner = Player.NONE;

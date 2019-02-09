@@ -2,9 +2,9 @@
  * Stores data needed to add an edge to the board
  */
 public class Action {
-    int row;
-    int col;
-    boolean xEdge;
+    private final int row;
+    private final int col;
+    private final boolean xEdge;
 
     public Action(int row, int col, boolean xEdge) {
         this.row = row;
