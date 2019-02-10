@@ -10,7 +10,9 @@ public class Search {
      * @return an Action object representing the move that leads to the outcome with the best utility
      */
     public static Action miniMax(Board state, int depth) {
-        return maxValueState(state, depth).getLastAction();
+        Board resultBoard = maxValueState(state, depth);
+        System.out.println("PROJECTED UTILITY: " + resultBoard.getUtilityValue());
+        return resultBoard.getLastAction();
     }
 
     /**
@@ -21,7 +23,9 @@ public class Search {
      * @return an Action object representing the move that leads to the outcome with the best utility
      */
     public static Action alphaBeta(Board state, int depth) {
-        return maxValueStateAlphaBeta(state, depth, Integer.MIN_VALUE, Integer.MAX_VALUE).getLastAction();
+        Board resultBoard = maxValueStateAlphaBeta(state, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        System.out.println("PROJECTED UTILITY: " + resultBoard.getUtilityValue());
+        return resultBoard.getLastAction();
     }
 
     /**
@@ -158,4 +162,5 @@ public class Search {
 
         return minState;
     }
+
 }
