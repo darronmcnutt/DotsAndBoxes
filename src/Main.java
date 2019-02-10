@@ -22,9 +22,9 @@ public class Main {
                 plies = Integer.parseInt(userInput.nextLine());
                 if (plies < 1) { throw new InputMismatchException(); }
 
-                System.out.print("Select search algorithm\n(1) Minimax (2) Alpha-beta: ");
+                System.out.print("Select search algorithm\n(1) Minimax\n(2) Alpha-beta\n(3) Alpha-beta (with increasing plies)\nSELECTION: ");
                 search = Integer.parseInt(userInput.nextLine());
-                if (search != 1 && search != 2) { throw new InputMismatchException(); }
+                if (search != 1 && search != 2 && search !=3) { throw new InputMismatchException(); }
 
                 inputComplete = true;
             } catch (NumberFormatException e) {
@@ -67,13 +67,26 @@ public class Main {
                         System.out.println("Alpha-beta");
                         computerAction = Search.alphaBeta(board, plies);
                         break;
+                    case 3:
+                        System.out.print("Alpha-beta ");
+                        if (board.getEdgesRemaining() > 21) {
+                            System.out.println("with 5 plies");
+                            computerAction = Search.alphaBeta(board, 5);
+                        } else if (board.getEdgesRemaining() > 12){
+                            System.out.println("with 7 plies");
+                            computerAction = Search.alphaBeta(board, 7);
+                        } else {
+                            System.out.println("with 12 plies");
+                            computerAction = Search.alphaBeta(board, 12);
+                        }
+                        break;
                     default:
                         System.out.println("Alpha-beta");
                         computerAction = Search.alphaBeta(board, plies);
                 }
 
                 Instant end = Instant.now();
-                System.out.println("SEARCH TIME: " + Duration.between(start, end).toMillis() + "ms\n");
+                System.out.println("SEARCH TIME: " + Duration.between(start, end).toMillis() + "ms");
 
                 row = computerAction.getRow();
                 col = computerAction.getCol();
@@ -82,6 +95,7 @@ public class Main {
                 if (board.addEdge(row, col, isXEdge)) {
                     board.checkBox(row, col, isXEdge, currentPlayer);
                     currentPlayer = Player.WHITE;
+                    System.out.println("COMPUTER MOVE: " + row + " " + col + " " + (isXEdge ? "right" : "down") + "\n");
                 }
 
             } else {

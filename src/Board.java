@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -204,6 +205,9 @@ public class Board {
             }
         }
 
+        // Not necessary and adds some time, but can make the game more interesting
+        Collections.shuffle(actions);
+
         return actions;
     }
 
@@ -221,6 +225,10 @@ public class Board {
 
     public void setUtilityValue(int utilityValue) {
         this.utilityValue = utilityValue;
+    }
+
+    public int getEdgesRemaining() {
+        return edgesRemaining;
     }
 
     /**
