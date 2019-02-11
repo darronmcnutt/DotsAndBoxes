@@ -69,7 +69,10 @@ public class Main {
                         break;
                     case 3:
                         System.out.print("Alpha-beta ");
-                        if (board.getEdgesRemaining() > 21) {
+                        if (board.getEdgesRemaining() > 30) {
+                            System.out.println("with 3 plies");
+                            computerAction = Search.alphaBeta(board, 3);
+                        } else if (board.getEdgesRemaining() > 21) {
                             System.out.println("with 5 plies");
                             computerAction = Search.alphaBeta(board, 5);
                         } else if (board.getEdgesRemaining() > 12){
